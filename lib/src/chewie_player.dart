@@ -174,6 +174,7 @@ class ChewieState extends State<Chewie> {
   Future<dynamic> _pushFullScreenWidget(BuildContext context) async {
     final TransitionRoute<void> route = PageRouteBuilder<void>(
       pageBuilder: _fullScreenRoutePageBuilder,
+      settings: const RouteSettings(name: 'video_full_screen'),
     );
 
     onEnterFullScreen();
@@ -187,13 +188,9 @@ class ChewieState extends State<Chewie> {
       rootNavigator: widget.controller.useRootNavigator,
     );
 
-    if (navigator.canPop()) {
-      // 替换全屏页（不退出）
-      await navigator.pushReplacement(route);
-    } else {
-      // 第一次进入全屏
-      await navigator.push(route);
-    }
+    await navigator.pushAndRemoveUntil(
+      route, (route) => route.settings.name != 'video_full_screen',
+    );
 
     final wasPlaying = widget.controller.videoPlayerController.value.isPlaying;
 
