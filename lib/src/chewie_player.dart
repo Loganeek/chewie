@@ -182,16 +182,26 @@ class ChewieState extends State<Chewie> {
       WakelockPlus.enable();
     }
 
-    await Navigator.of(
+    final navigator = Navigator.of(
       context,
       rootNavigator: widget.controller.useRootNavigator,
-    ).push(route);
+    );
+
+    if (navigator.canPop()) {
+      // 替换全屏页（不退出）
+      await navigator.pushReplacement(route);
+    } else {
+      // 第一次进入全屏
+      await navigator.push(route);
+    }
 
     final wasPlaying = widget.controller.videoPlayerController.value.isPlaying;
 
     if (kIsWeb) {
       await _reInitializeControllers(wasPlaying);
     }
+
+    if(!mounted) return;
 
     _isFullScreen = false;
     widget.controller.exitFullScreen();
