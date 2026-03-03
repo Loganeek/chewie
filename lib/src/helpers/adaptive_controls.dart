@@ -8,6 +8,7 @@ class AdaptiveControls extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (Theme.of(context).platform) {
       case TargetPlatform.android:
+      case TargetPlatform.ohos:
       case TargetPlatform.fuchsia:
         return const MaterialControls();
 
